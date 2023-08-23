@@ -5,6 +5,7 @@ server = Flask(__name__ , template_folder="templates")
 @server.route("/", methods=['GET', 'POST'])
 def toHomePage():
     return redirect("/register")
+
 @server.route("/register", methods=['GET', 'POST'])
 def homePage():
     if request.method == 'POST':
@@ -16,7 +17,6 @@ def homePage():
 
 
 @server.route("/login", methods=['GET', 'POST'])
-@server.route("/logout", methods=['GET', 'POST'])
 def loginPage():
     if request.method == 'POST':
         name = request.form["username"]
@@ -25,6 +25,12 @@ def loginPage():
         if exist:
             return redirect('/lobby')
     return render_template('login.html')
+
+
+@server.route("/logout", methods=['GET', 'POST'])
+def logOut():
+    #log out the user
+    return redirect("/login")
     
 @server.route("/chat", methods=['GET', 'POST'])
 def chatPage():
@@ -44,8 +50,8 @@ def saveInCsv(name, password):
                 return True
     with open('users.csv', 'a') as f:
         writer = csv.writer(f)
-        encPassword = password.encode()
-        writer.writerow([name,encPassword])
+        #encPassword = password.encode()
+        writer.writerow([name,password])
         f.close()
         return False
 
@@ -54,7 +60,7 @@ def checkIfExist(name, password):
         reader = csv.reader(f, delimiter=',') 
         for row in reader:
             if name == row[0]:
-                if password.encode() == row[1]:
+                if password == row[1]:
                     f.close()
                     return True
         return False
