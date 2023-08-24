@@ -25,6 +25,9 @@ def chatPage():
 def lobbyPage():
     return render_template('lobby.html')
 
+@server.route("/chat/<int:room> ", methods=['GET', 'POST'])
+def chatRoom():
+    return render_template('chat.html')
 
 def saveInCsv(name, password):
     with open('users.csv', 'rt') as f:
