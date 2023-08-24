@@ -43,7 +43,7 @@ def lobby():
         if request.method == 'POST':
             room_name = request.form['new_room']
             path='./rooms/'+room_name+".txt"
-            open(path, 'w')  
+            open(path, 'w')
         rooms = os.listdir('./rooms')
         new_rooms = [x[:-4] for x in rooms]
         print(new_rooms)
@@ -53,13 +53,13 @@ def lobby():
 
 @app.route("/chat/<room>", methods=['GET', 'POST'])
 def chatPage(room):
-    return render_template('chat.html', room)
+    return render_template('chat.html', room = room)
 
 
-@app.route("/api/chat/<room> ", methods=['GET', 'POST'])
+@app.route("/api/chat/<room>", methods=['GET', 'POST'])
 def update_chat(room):
-    path = os.getenv('CHAT_ROOM_PATH') + room + ".txt"
     if request.method == 'POST':
+        #path = os.getenv('CHAT_ROOM_PATH') + room + ".txt"
         if 'username' in session:
             name = session['username']
         else:
@@ -67,17 +67,15 @@ def update_chat(room):
         message = request.form("msg")
         time = datetime.now().strftime("%T-%m-%d %H:%M:%S")
 
-        with open(path, 'a') as f:
-            writer = csv.writer(f)
-            writer.writerow(f'{time} {name}: {message}')
-            f.close()
-    
-    with open(path, 'rt') as f:
-        f.seek(0)
-        content = f.read()
+        with open(f'rooms/{room}.txt', 'a') as f:
+            f.write("helloooooooo")
         f.close()
-        
-    return content
+   
+    if request.method == "GET":
+        with open(f'rooms/{room}.txt', 'rt') as f:
+            f.seek(0)
+            content = f.read()
+            return content
 
 def saveInCsv(name, password):
     with open('users.csv', 'rt') as f:
