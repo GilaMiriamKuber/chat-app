@@ -41,8 +41,8 @@ def logOut():
     session.pop('username', None)
     return redirect("/login")
     
-@server.route("/chat", methods=['GET', 'POST'])
-def chatPage():
+@server.route("/chat/<room>", methods=['GET', 'POST'])
+def chatPage(room):
     return render_template('chat.html')
 
 @server.route("/lobby", methods=['GET', 'POST'])
