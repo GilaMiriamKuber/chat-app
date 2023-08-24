@@ -66,9 +66,9 @@ def update_chat(room):
             name = "guest"
         message = request.form("msg")
         time = datetime.now().strftime("%T-%m-%d %H:%M:%S")
-
+        saveInCsv("sss" ,0)
         with open(f'rooms/{room}.txt', 'a') as f:
-            f.write("helloooooooo")
+            f.write(f'[{time}] {name}: {message}\n')
         f.close()
    
     if request.method == "GET":
