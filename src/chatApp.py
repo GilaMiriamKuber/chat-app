@@ -2,12 +2,12 @@ from flask import Flask, redirect, request, render_template, session
 import csv
 import os
 from dotenv import load_dotenv
-
 load_dotenv()
 app = Flask("__name__")
 app.config["SESSION_PERMANENT"] = False
 app.config["SESSION_TYPE"] = "filesystem"
 app.secret_key = "my_key_here"
+
 server = Flask(__name__ , template_folder="templates")
 
 @server.route("/", methods=['GET', 'POST'])
@@ -47,8 +47,21 @@ def chatPage(room):
 
 @server.route("/lobby", methods=['GET', 'POST'])
 def lobbyPage():
-    return render_template('lobby.html')
+    if request.method == 'POST':
+        # if session.get('usernme') == True:
+            new_room = request.form['new_room']
+            # path = os.getenv('ROOMS_PATH') + new_room + ".txt"
+            path = './src/rooms' + new_room + ".txt"
+            room_added = open(path , 'w')
+            rooms=  os.listdir('./src/rooms')   
+            room_names=
+            return render_template('lobby.html',room_names=rooms)
+    else:
+        return redirect ('lobby.html') 
 
+@server.route("/chat/<int:room> ", methods=['GET', 'POST'])
+def chatRoom():
+    return render_template('chat.html')
 
 def saveInCsv(name, password):
     with open('users.csv', 'rt') as f:
