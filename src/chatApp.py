@@ -1,9 +1,13 @@
-from flask import Flask, redirect, url_for, request, render_template
+from flask import Flask, redirect, request, render_template, session
 import csv
 import os
 from dotenv import load_dotenv
 
 load_dotenv()
+app = Flask("__name__")
+app.config["SESSION_PERMANENT"] = False
+app.config["SESSION_TYPE"] = "filesystem"
+app.secret_key = "my_key_here"
 server = Flask(__name__ , template_folder="templates")
 
 @server.route("/", methods=['GET', 'POST'])
@@ -27,13 +31,14 @@ def loginPage():
         password = request.form["password"]
         exist = checkIfExist(name, password)
         if exist:
+            session['username'] = name
             return redirect('/lobby')
     return render_template('login.html')
 
 
 @server.route("/logout", methods=['GET', 'POST'])
 def logOut():
-    #log out the user
+    session.pop('username', None)
     return redirect("/login")
     
 @server.route("/chat", methods=['GET', 'POST'])
