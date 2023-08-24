@@ -2,8 +2,8 @@ from flask import Flask, redirect, url_for, request, render_template
 import csv
 import os
 from dotenv import load_dotenv
-
 load_dotenv()
+
 server = Flask(__name__ , template_folder="templates")
 
 @server.route("/", methods=['GET', 'POST'])
@@ -42,7 +42,17 @@ def chatPage():
 
 @server.route("/lobby", methods=['GET', 'POST'])
 def lobbyPage():
-    return render_template('lobby.html')
+    if request.method == 'POST':
+        # if session.get('usernme') == True:
+            new_room = request.form['new_room']
+            # path = os.getenv('ROOMS_PATH') + new_room + ".txt"
+            path = './src/rooms' + new_room + ".txt"
+            room_added = open(path , 'w')
+            rooms=  os.listdir('./src/rooms')   
+            room_names=
+            return render_template('lobby.html',room_names=rooms)
+    else:
+        return redirect ('lobby.html') 
 
 @server.route("/chat/<int:room> ", methods=['GET', 'POST'])
 def chatRoom():
