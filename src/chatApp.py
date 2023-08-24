@@ -1,6 +1,7 @@
 from flask import Flask, redirect, request, render_template, session
 import csv
 import os
+import datetime
 
 app = Flask(__name__)
 app.secret_key = "tamar_gilamiriam_!_@_?_chat_app"
@@ -36,10 +37,6 @@ def logOut():
     session.pop('username', None)
     return redirect("/login")
 
-@app.route("/chat/<room>", methods=['GET', 'POST'])
-def chatPage(room):
-    return render_template('chat.html')
-
 @app.route("/lobby", methods=['GET', 'POST'])
 def lobby():
     if 'username' in session:
@@ -54,9 +51,33 @@ def lobby():
     else:
         return redirect('/login')
 
-@app.route("/chat/<int:room> ", methods=['GET', 'POST'])
-def chatRoom():
-    return render_template('chat.html')
+@app.route("/chat/<room>", methods=['GET', 'POST'])
+def chatPage(room):
+    return render_template('chat.html', room)
+
+
+@app.route("/api/chat/<room> ", methods=['GET', 'POST'])
+def update_chat(room):
+    path = os.getenv('CHAT_ROOM_PATH') + room + ".txt"
+    if request.method == 'POST':
+        if 'username' in session:
+            name = session['username']
+        else:
+            name = "guest"
+        message = request.form("msg")
+        time = datetime.now().strftime("%T-%m-%d %H:%M:%S")
+
+        with open(path, 'a') as f:
+            writer = csv.writer(f)
+            writer.writerow(f'{time} {name}: {message}')
+            f.close()
+    
+    with open(path, 'rt') as f:
+        f.seek(0)
+        content = f.read()
+        f.close()
+        
+    return content
 
 def saveInCsv(name, password):
     with open('users.csv', 'rt') as f:
