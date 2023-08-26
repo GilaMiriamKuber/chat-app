@@ -1,7 +1,7 @@
 from flask import Flask, redirect, request, render_template, session
 import csv
 import os
-import datetime
+from datetime import datetime
 
 app = Flask(__name__)
 app.secret_key = "tamar_gilamiriam_!_@_?_chat_app"
@@ -44,6 +44,9 @@ def lobby():
             room_name = request.form['new_room']
             path='./rooms/'+room_name+".txt"
             open(path, 'w')
+            with open(path, 'a') as f:
+                f.write(f'hello to the room {room_name}\n')
+            f.close()
         rooms = os.listdir('./rooms')
         new_rooms = [x[:-4] for x in rooms]
         print(new_rooms)
@@ -58,23 +61,25 @@ def chatPage(room):
 
 @app.route("/api/chat/<room>", methods=['GET', 'POST'])
 def update_chat(room):
+    path = os.getenv('CHAT_ROOM_PATH')
+    path = f'{path}{room}.txt'
     if request.method == 'POST':
-        #path = os.getenv('CHAT_ROOM_PATH') + room + ".txt"
         if 'username' in session:
             name = session['username']
         else:
             name = "guest"
-        message = request.form("msg")
-        time = datetime.now().strftime("%T-%m-%d %H:%M:%S")
-        with open(f'rooms/{room}.txt', 'a') as f:
+        message = request.form['msg']
+        time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        with open(path, 'a') as f:
             f.write(f'[{time}] {name}: {message}\n')
         f.close()
    
     if request.method == "GET":
-        with open(f'rooms/{room}.txt', 'rt') as f:
+        with open(path, 'rt') as f:
             f.seek(0)
             content = f.read()
             return content
+
 
 def saveInCsv(name, password):
     with open('users.csv', 'rt') as f:

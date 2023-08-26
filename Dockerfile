@@ -5,7 +5,7 @@ WORKDIR /code
 # copy the dependencies file to the working directory
 COPY requirements.txt .
 
-ENV ROOMS_DIR='rooms/'
+ENV CHAT_ROOM_PATH='rooms/'
 
 ENV FLASK_ENV development
 # install dependencies
