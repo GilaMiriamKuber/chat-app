@@ -1,6 +1,7 @@
 from flask import Flask, redirect, request, render_template, session
 import csv
 import os
+import base64
 from datetime import datetime
 
 app = Flask(__name__)
@@ -17,7 +18,7 @@ def register():
     if request.method == 'POST':
         name = request.form["username"]
         password = request.form["password"]
-        exist = saveInCsv(name, password)
+        saveInCsv(name, password)
         return redirect('/login')
     return render_template('register.html')
 
@@ -85,15 +86,22 @@ def saveInCsv(name, password):
     with open('users.csv', 'rt') as f:
         reader = csv.reader(f, delimiter=',')
         for row in reader:
-            if name == row[0]:
-                f.close()
-                return True
+            if row != "":
+                if name == row[0]:
+                    f.close()
+                    return True
     with open('users.csv', 'a') as f:
+        enc_password = password.encode('ascii')
+        enc64_password = base64.b64encode(enc_password)
+        password = enc64_password.decode('ascii')
         writer = csv.writer(f)
         writer.writerow([name, password])
     return False
 
 def checkIfExist(name, password):
+    enc_password = password.encode('ascii')
+    enc64_password = base64.b64encode(enc_password)
+    password = enc64_password.decode('ascii')    
     with open('users.csv', 'rt') as f:
         reader = csv.reader(f, delimiter=',')
         for row in reader:
