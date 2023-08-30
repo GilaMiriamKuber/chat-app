@@ -9,6 +9,8 @@ app.secret_key = "tamar_gilamiriam_!_@_?_chat_app"
 app.config["SESSION_PERMANENT"] = False
 app.config["SESSION_TYPE"] = "filesystem"
 
+
+#app routes
 @app.route("/", methods=['GET', 'POST'])
 def toHomePage():
     return redirect("/register")
@@ -45,9 +47,6 @@ def lobby():
             room_name = request.form['new_room']
             path='./rooms/'+room_name+".txt"
             open(path, 'w')
-            with open(path, 'a') as f:
-                f.write(f'hello to the room {room_name}\n')
-            f.close()
         rooms = os.listdir('./rooms')
         new_rooms = [x[:-4] for x in rooms]
         print(new_rooms)
@@ -81,6 +80,7 @@ def update_chat(room):
             content = f.read()
             return content
 
+# help functions
 
 def saveInCsv(name, password):
     with open('users.csv', 'rt') as f:
@@ -108,6 +108,15 @@ def checkIfExist(name, password):
             if name == row[0] and password == row[1]:
                 return True
         return False
+    
+
+@app.route('/clear/<room>', methods=['GET', 'POST'])
+def clear(room):
+    with open("./rooms/"+room+".txt", "w") as f:
+        f.write('')
+    return render_template('chat.html', room = room)
+    
+
 
 if __name__ == "__main__":
     app.run(host='0.0.0.0')
