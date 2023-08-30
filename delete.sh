@@ -7,6 +7,7 @@ if [[ -z version ]];then
     exit 1
 fi
 
-docker build -t chatapp:$version .
+docker rmi chatapp:$version
 
-docker run  -p 5000:5000 chatapp
+
+
