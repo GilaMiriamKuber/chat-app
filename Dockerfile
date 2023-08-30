@@ -12,5 +12,10 @@ ENV FLASK_ENV development
 RUN pip install -r requirements.txt
 # copy the content of the local src directory to the working directory
 COPY src/ .
+
+RUN apt-get -y update; apt-get -y install curl
+
+HEALTHCHECK --interval=10s --timeout=3s CMD curl --fail http://localhost:5000/health || exit 1 
+
 # command to run on container start
 CMD [ "python", "./chatApp.py" ]
