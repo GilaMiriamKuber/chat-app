@@ -112,10 +112,15 @@ def checkIfExist(name, password):
 
 @app.route('/clear/<room>', methods=['GET', 'POST'])
 def clear(room):
-    with open("./rooms/"+room+".txt", "w") as f:
-        f.write('')
-    return render_template('chat.html', room = room)
-    
+    name = session['username']
+    with open("./rooms/"+room+".txt", 'r') as f:
+        lines = f.readlines()
+
+    with open("./rooms/"+room+".txt", 'w') as f:
+        for line in lines:
+            if name not in line:
+                f.write(line)
+    return render_template('chat.html', room=room)
 
 
 if __name__ == "__main__":
