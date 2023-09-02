@@ -8,6 +8,7 @@ COPY requirements.txt .
 ENV CHAT_ROOM_PATH='rooms/'
 
 ENV FLASK_ENV development
+
 # install dependencies
 RUN pip install -r requirements.txt
 # copy the content of the local src directory to the working directory
