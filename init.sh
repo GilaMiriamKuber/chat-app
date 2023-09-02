@@ -12,4 +12,4 @@ users_csv="$(pwd)/src/users.csv"
 
 docker build -t chatapp:$version .
 
-docker run  -p 5000:5000 "$rooms_dir:/src/rooms" -v "$users_csv:/src/users.csv" chatapp:$version
+docker run  -p 5000:5000 -v "$rooms_dir:/src/rooms" -v "$users_csv:/src/users.csv" chatapp:$version
